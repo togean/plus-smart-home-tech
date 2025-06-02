@@ -12,7 +12,6 @@ import ru.yandex.practicum.collector.model.sensor.BasicSensorEvent;
 import ru.yandex.practicum.collector.service.HubsServiceImpl;
 import ru.yandex.practicum.collector.service.SensorsServiceImpl;
 
-
 @Validated
 @RestController
 @RequestMapping(path = "/events")
