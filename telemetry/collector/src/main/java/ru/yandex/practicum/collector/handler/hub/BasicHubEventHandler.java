@@ -13,6 +13,7 @@ import java.time.Instant;
 @RequiredArgsConstructor
 public abstract class BasicHubEventHandler<T extends SpecificRecordBase> implements HubEventHandler {
     @Value(value = "${hubsTopic}")
+
     private String hubsTopic;
 
     private final CollectorKafkaProducer producer;
