@@ -1,9 +1,9 @@
 package ru.yandex.practicum.collector.service;
 
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.collector.model.hub.BasicHubEvent;
+import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
 
 @Component
 public interface HubsService {
-    void sendHubEvent(BasicHubEvent hubEvent) throws IllegalAccessException;
+    void sendHubEvent(HubEventProto hubEvent) throws IllegalAccessException;
 }

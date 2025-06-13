@@ -1,10 +1,9 @@
 package ru.yandex.practicum.collector.handler;
 
-import ru.yandex.practicum.collector.model.hub.BasicHubEvent;
-import ru.yandex.practicum.collector.model.hub.HubEventType;
+import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
 
 public interface HubEventHandler {
-    HubEventType getEventType();
+    HubEventProto.PayloadCase getEventType();
 
-    void handle(BasicHubEvent event) throws IllegalAccessException;
+    void handle(HubEventProto event) throws IllegalArgumentException;
 }

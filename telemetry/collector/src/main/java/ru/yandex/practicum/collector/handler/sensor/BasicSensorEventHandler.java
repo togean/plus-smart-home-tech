@@ -4,9 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.springframework.beans.factory.annotation.Value;
 import ru.yandex.practicum.collector.handler.SensorEventHandler;
-import ru.yandex.practicum.collector.model.sensor.BasicSensorEvent;
 import ru.yandex.practicum.collector.service.CollectorKafkaProducer;
+import ru.yandex.practicum.grpc.telemetry.event.SensorEventProto;
 import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
+
+import java.time.Instant;
 
 @RequiredArgsConstructor
 public abstract class BasicSensorEventHandler<T extends SpecificRecordBase> implements SensorEventHandler {
@@ -14,21 +16,21 @@ public abstract class BasicSensorEventHandler<T extends SpecificRecordBase> impl
     private String sensorsTopic;
     private final CollectorKafkaProducer producer;
 
-    protected abstract T MapToAvro(BasicSensorEvent sensorEvent);
+    protected abstract T MapToAvro(SensorEventProto sensorEvent);
 
-    public void handle(BasicSensorEvent event) throws IllegalAccessException {
+    public void handle(SensorEventProto event) throws IllegalArgumentException {
 
         T payload = MapToAvro(event);
 
         SensorEventAvro sensorEventAvro = SensorEventAvro.newBuilder()
                 .setId(event.getId())
                 .setHubId(event.getHubId())
-                .setTimestamp(event.getTimestamp())
+                .setTimestamp(Instant.ofEpochSecond(event.getTimestamp().getSeconds(), event.getTimestamp().getNanos()))
                 .setPayload(payload)
                 .build();
         producer.send(
                 sensorsTopic,
-                event.getTimestamp(),
+                Instant.ofEpochSecond(event.getTimestamp().getSeconds(), event.getTimestamp().getNanos()),
                 event.getId(),
                 sensorEventAvro
         );

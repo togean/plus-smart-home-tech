@@ -1,10 +1,9 @@
 package ru.yandex.practicum.collector.handler;
 
-import ru.yandex.practicum.collector.model.sensor.BasicSensorEvent;
-import ru.yandex.practicum.collector.model.sensor.SensorEventType;
+import ru.yandex.practicum.grpc.telemetry.event.SensorEventProto;
 
 public interface SensorEventHandler {
-    SensorEventType getEventType();
+    SensorEventProto.PayloadCase getEventType();
 
-    void handle(BasicSensorEvent event) throws IllegalAccessException;
+    void handle(SensorEventProto event) throws IllegalArgumentException;
 }

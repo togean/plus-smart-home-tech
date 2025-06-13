@@ -1,9 +1,9 @@
 package ru.yandex.practicum.collector.service;
 
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.collector.model.sensor.BasicSensorEvent;
+import ru.yandex.practicum.grpc.telemetry.event.SensorEventProto;
 
 @Component
 public interface SensorsService {
-    void sendSensorEvent(BasicSensorEvent hubEvent) throws IllegalAccessException;
+    void sendSensorEvent(SensorEventProto hubEvent) throws IllegalAccessException;
 }

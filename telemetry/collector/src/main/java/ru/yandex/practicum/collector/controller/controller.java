@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import ru.yandex.practicum.collector.model.hub.BasicHubEvent;
 import ru.yandex.practicum.collector.model.sensor.BasicSensorEvent;
+import ru.yandex.practicum.collector.service.HubsService;
 import ru.yandex.practicum.collector.service.HubsServiceImpl;
+import ru.yandex.practicum.collector.service.SensorsService;
 import ru.yandex.practicum.collector.service.SensorsServiceImpl;
 
 @Validated
@@ -18,16 +20,16 @@ import ru.yandex.practicum.collector.service.SensorsServiceImpl;
 @RequiredArgsConstructor
 public class controller {
 
-    private final SensorsServiceImpl sensorService;
-    private final HubsServiceImpl hubService;
+    private final SensorsService sensorService;
+    private final HubsService hubService;
 
     @PostMapping("/sensors")
     public void collectSensorEvent(@RequestBody @Valid BasicSensorEvent sensorEvent) throws IllegalAccessException {
-        sensorService.sendSensorEvent(sensorEvent);
+        //sensorService.sendSensorEvent(sensorEvent);
     }
 
     @PostMapping("/hubs")
     public void collectHubEvent(@RequestBody @Valid BasicHubEvent hubEvent) throws IllegalAccessException {
-        hubService.sendHubEvent(hubEvent);
+        //hubService.sendHubEvent(hubEvent);
     }
 }
