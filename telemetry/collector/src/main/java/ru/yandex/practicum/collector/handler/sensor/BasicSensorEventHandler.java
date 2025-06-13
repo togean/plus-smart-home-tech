@@ -13,6 +13,7 @@ import java.time.Instant;
 @RequiredArgsConstructor
 public abstract class BasicSensorEventHandler<T extends SpecificRecordBase> implements SensorEventHandler {
     @Value(value = "${sensorsTopic}")
+
     private String sensorsTopic;
     private final CollectorKafkaProducer producer;
 
