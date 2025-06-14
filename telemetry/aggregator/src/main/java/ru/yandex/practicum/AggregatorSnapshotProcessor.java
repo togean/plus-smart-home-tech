@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.SensorSnapshotAvro;
 import ru.yandex.practicum.kafka.telemetry.event.SensorStateAvro;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
