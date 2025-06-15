@@ -10,9 +10,7 @@ import jakarta.validation.Valid;
 import ru.yandex.practicum.collector.model.hub.BasicHubEvent;
 import ru.yandex.practicum.collector.model.sensor.BasicSensorEvent;
 import ru.yandex.practicum.collector.service.HubsService;
-import ru.yandex.practicum.collector.service.HubsServiceImpl;
 import ru.yandex.practicum.collector.service.SensorsService;
-import ru.yandex.practicum.collector.service.SensorsServiceImpl;
 
 @Validated
 @RestController

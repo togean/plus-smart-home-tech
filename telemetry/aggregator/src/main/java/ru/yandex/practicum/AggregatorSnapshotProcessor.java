@@ -37,6 +37,5 @@ public class AggregatorSnapshotProcessor {
         snapshotsMap.put(event.getHubId(), sensorSnapshotAvro);
 
         return Optional.of(sensorSnapshotAvro);
-
     }
 }
