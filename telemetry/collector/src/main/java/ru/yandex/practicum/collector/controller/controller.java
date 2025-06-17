@@ -23,11 +23,11 @@ public class controller {
 
     @PostMapping("/sensors")
     public void collectSensorEvent(@RequestBody @Valid BasicSensorEvent sensorEvent) throws IllegalAccessException {
-        //sensorService.sendSensorEvent(sensorEvent);
+
     }
 
     @PostMapping("/hubs")
     public void collectHubEvent(@RequestBody @Valid BasicHubEvent hubEvent) throws IllegalAccessException {
-        //hubService.sendHubEvent(hubEvent);
+
     }
 }

@@ -49,7 +49,7 @@ public class HubEventHandler {
         }
     }
 
-    public void handleDeviceAddedEvent(String hubId, DeviceAddedEventAvro event) {
+    private void handleDeviceAddedEvent(String hubId, DeviceAddedEventAvro event) {
         String id = event.getId();
         Boolean isSensorExist = sensorRepository.existsByIdInAndHubId(List.of(id), hubId);
         if (!isSensorExist) {
@@ -60,12 +60,12 @@ public class HubEventHandler {
         }
     }
 
-    public void handleDeviceRemovedEvent(String hubId, DeviceRemovedEventAvro event) {
+    private void handleDeviceRemovedEvent(String hubId, DeviceRemovedEventAvro event) {
         String id = event.getId();
         sensorRepository.deleteById(id);
     }
 
-    public void handleScenarioAddedEvent(String hubId, ScenarioAddedEventAvro event) {
+    private void handleScenarioAddedEvent(String hubId, ScenarioAddedEventAvro event) {
         Optional<Scenario> scenario = scenarioRepository.findByHubIdAndName(hubId, event.getName());
         try {
             if (scenario.isPresent()) {
@@ -97,7 +97,7 @@ public class HubEventHandler {
         }
     }
 
-    public void handleScenarioRemovedEvent(String hubId, ScenarioRemovedEventAvro event) {
+    private void handleScenarioRemovedEvent(String hubId, ScenarioRemovedEventAvro event) {
         String scenarioName = event.getName();
         Optional<Scenario> scenarioToBeDeleted = scenarioRepository.findByHubIdAndName(hubId, scenarioName);
         if (scenarioToBeDeleted.isPresent()) {
