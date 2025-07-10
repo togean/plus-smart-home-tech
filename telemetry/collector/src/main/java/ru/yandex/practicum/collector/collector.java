@@ -1,8 +1,10 @@
 package ru.yandex.practicum.collector;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-@SpringBootApplication
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
+@SpringBootApplication
+@ConfigurationPropertiesScan
 public class collector {
     public static void main(String[] args) {
         SpringApplication.run(collector.class);
