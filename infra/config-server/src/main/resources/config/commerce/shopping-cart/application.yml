@@ -16,6 +16,6 @@ spring:
       mode: always
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: 'jdbc:postgresql://localhost:5432/shopping_cart_db'
+    url: 'jdbc:postgresql://localhost:7432/shopping_cart_db'
     username: postgres
     password: postgres
