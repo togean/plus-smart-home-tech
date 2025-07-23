@@ -84,11 +84,14 @@ public class WarehouseServiceImpl implements WarehouseService {
             }
         }
         log.info("WarehouseService: Расчёт характеристик товаров выполнен успешно");
-        log.info("WarehouseService: Проверка кол-ва товаров выполнен успешно");
+        log.info("WarehouseService: Проверка кол-ва товаров выполнена успешно");
+        log.info("WarehouseService: weightOfProductsInCard = {}", weightOfProductsInCard);
+        log.info("WarehouseService: volumeOfProductsInCart = {}", volumeOfProductsInCart);
+        log.info("WarehouseService: isAnyFragile = {}", isAnyFragile);
         return BookedProductsDto.builder()
                 .deliveryWeight(weightOfProductsInCard)
-                .fragile(isAnyFragile)
                 .deliveryVolume(volumeOfProductsInCart)
+                .fragile(isAnyFragile)
                 .build();
     }
 

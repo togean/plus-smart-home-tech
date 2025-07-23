@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS products;
+
 CREATE TABLE IF NOT EXISTS products
 (
     product_id       UUID DEFAULT gen_random_uuid() PRIMARY KEY,

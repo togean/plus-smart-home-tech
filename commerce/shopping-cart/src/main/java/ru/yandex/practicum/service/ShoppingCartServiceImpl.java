@@ -1,5 +1,6 @@
 package ru.yandex.practicum.service;
 
+import feign.FeignException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import ru.yandex.practicum.exception.NotAuthorizedUserException;
 import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.feignclient.WarehouseClient;
 import ru.yandex.practicum.mapper.ShoppingCartMapper;
+import ru.yandex.practicum.model.BookedProductsDto;
 import ru.yandex.practicum.model.ChangeProductQuantityRequest;
 import ru.yandex.practicum.model.ShoppingCart;
 import ru.yandex.practicum.model.ShoppingCartDto;
@@ -30,37 +32,43 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public ShoppingCartDto getShoppingCart(String username) {
         log.info("ShoppingCartService: Получение данных по корзине товаров для пользователя {}", username);
         validateUser(username);
-        Optional<ShoppingCart> cart = shoppingCartRepository.findByUsername(username);
+        Optional<ShoppingCart> cart = shoppingCartRepository.findByUsernameAndActive(username, true);
 
         if (cart.isPresent()) {
             return shoppingCartMapper.shoppingCartDtoToCart(cart.get());
         }
-        ShoppingCart newCart = shoppingCartRepository.save(ShoppingCart.builder()
-                .username(username)
-                .active(true)
-                .cartProducts(new HashMap<>())
-                .build());
-        return shoppingCartMapper.shoppingCartDtoToCart(newCart);
+        log.info("ShoppingCartService: У пользователя нет корзины товаров, создаю для него новую корзину");
+        ShoppingCart newUserCart = new ShoppingCart();
+        newUserCart.setUsername(username);
+        newUserCart.setActive(true);
+        newUserCart.setCartProducts(new HashMap<>());
+
+        cart = Optional.of(shoppingCartRepository.save(newUserCart));
+
+        return shoppingCartMapper.shoppingCartDtoToCart(cart.get());
     }
 
     @Override
     public ShoppingCartDto addProduct(String username, Map<UUID, Long> products) {
         log.info("ShoppingCartService: Добавление новой корзины товаров для пользователя {}", username);
         validateUser(username);
-        ShoppingCart shoppingCart = shoppingCartRepository.save(ShoppingCart.builder()
-                .username(username)
-                .active(true)
-                .cartProducts(new HashMap<>())
-                .build());
-        if (shoppingCart.isActive()) {
-            products.forEach((key, value) -> {
-                shoppingCart.getCartProducts().put(key, value);
-            });
-            warehouseClient.checkProductQuantity(shoppingCartMapper.shoppingCartDtoToCart(shoppingCart));
-            return shoppingCartMapper.shoppingCartDtoToCart(shoppingCartRepository.save(shoppingCart));
-        } else {
-            throw new ValidationException("ShoppingCartService: У пользователя нет корзины");
+        ShoppingCart cart = shoppingCartRepository.findByUsername(username)
+                .orElseGet(() -> shoppingCartRepository.save(ShoppingCart.builder()
+                        .username(username)
+                        .active(true)
+                        .cartProducts(new HashMap<>())
+                        .build()));
+
+        try {
+            warehouseClient.checkProductQuantity(shoppingCartMapper.shoppingCartDtoToCart(cart));
+        } catch (FeignException e) {
+            log.error("ShoppingCartService: Модуль склада пока недоступен: {}", e.getMessage());
+            throw new IllegalStateException("ShoppingCartService: Модуль склада пока недоступен. Попробуйте выполнить обращение позже");
         }
+
+        cart.setCartProducts(products);
+        ShoppingCart savedShoppingCart = shoppingCartRepository.save(cart);
+        return shoppingCartMapper.shoppingCartDtoToCart(savedShoppingCart);
     }
 
     @Override
@@ -68,7 +76,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         log.info("ShoppingCartService: Деактивация корзины пользователя: {}", username);
         validateUser(username);
         ShoppingCart userCart = shoppingCartRepository.findByUsernameAndActive(username, true)
-                .orElseThrow(() -> new NotFoundException("ShoppingCartService: Не найдена корзина для пользователя"));
+                .orElseThrow(() -> new NotFoundException("ShoppingCartService: Не найдена корзина для пользователя "+username));
         userCart.setActive(false);
         shoppingCartRepository.save(userCart);
     }
