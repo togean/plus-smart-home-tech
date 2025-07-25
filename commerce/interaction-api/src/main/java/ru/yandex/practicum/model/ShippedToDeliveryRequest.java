@@ -1,20 +1,19 @@
 package ru.yandex.practicum.model;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
-import java.util.Map;
 import java.util.UUID;
 
 @Data
-@Builder
 @AllArgsConstructor
-public class ProductReturnRequest {
+public class ShippedToDeliveryRequest {
     @NotNull
-    private UUID orderId;
-
+    UUID orderId;
     @NotNull
-    private Map<UUID, Long> products;
+    UUID deliveryId;
 }

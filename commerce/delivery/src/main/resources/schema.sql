@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS address (
 CREATE TABLE IF NOT EXISTS delivery (
     delivery_id      UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     order_id         UUID NOT NULL,
-    from_address_id  UUID NOT NULL,
-    to_address_id    UUID NOT NULL,
+    from_address_id  UUID NOT NULL REFERENCES address(address_id),
+    to_address_id    UUID NOT NULL REFERENCES address(address_id),
     status           VARCHAR NOT NULL
 );

@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS orders (
     total_price      DOUBLE PRECISION,
     delivery_price   DOUBLE PRECISION,
     product_price    DOUBLE PRECISION,
-    state            VARCHAR(50),
+    status           VARCHAR(50),
     fragile          BOOLEAN
 );
 

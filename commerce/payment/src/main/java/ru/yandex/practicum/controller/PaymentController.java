@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.feignclient.PaymentClient;
 import ru.yandex.practicum.model.OrderDto;
 import ru.yandex.practicum.model.PaymentDto;
-import ru.yandex.practicum.repository.PaymantRepository;
+import ru.yandex.practicum.service.PaymentService;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -13,30 +13,30 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/payment")
 public class PaymentController implements PaymentClient {
-    private PaymantRepository paymantRepository;
+    private PaymentService paymentService;
 
     @Override
     public PaymentDto addNewPayment(OrderDto orderDto) {
-        return null;
+        return paymentService.addNewPayment(orderDto);
     }
 
     @Override
     public BigDecimal getTotalCost(OrderDto orderDto) {
-        return null;
+        return paymentService.getTotalCost(orderDto);
     }
 
     @Override
     public void paymentSuccess(UUID orderId) {
-
+        paymentService.paymentSuccess(orderId);
     }
 
     @Override
     public Double getPaymentProductCost(OrderDto orderDto) {
-        return null;
+        return paymentService.getPaymentProductCost(orderDto);
     }
 
     @Override
     public void paymentFailed(UUID orderId) {
-
+        paymentService.paymentFailed(orderId);
     }
 }
