@@ -10,6 +10,6 @@ public interface PaymentService {
     PaymentDto addNewPayment(OrderDto orderDto);
     BigDecimal getTotalCost(OrderDto orderDto);
     void paymentSuccess(UUID orderId);
-    Double getPaymentProductCost(OrderDto orderDto);
+    BigDecimal getPaymentProductCost(OrderDto orderDto);
     void paymentFailed(UUID orderId);
 }

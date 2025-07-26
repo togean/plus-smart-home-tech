@@ -26,17 +26,17 @@ public class PaymentController implements PaymentClient {
     }
 
     @Override
-    public void paymentSuccess(UUID orderId) {
+    public void paymentResultSuccess(UUID orderId) {
         paymentService.paymentSuccess(orderId);
     }
 
     @Override
-    public Double getPaymentProductCost(OrderDto orderDto) {
+    public BigDecimal getPaymentProductCost(OrderDto orderDto) {
         return paymentService.getPaymentProductCost(orderDto);
     }
 
     @Override
-    public void paymentFailed(UUID orderId) {
+    public void paymentResultFailed(UUID orderId) {
         paymentService.paymentFailed(orderId);
     }
 }

@@ -18,11 +18,11 @@ public interface PaymentClient {
     BigDecimal getTotalCost(@RequestBody OrderDto orderDto);
 
     @PostMapping("/refund")
-    void paymentSuccess(@RequestBody UUID orderId);
+    void paymentResultSuccess(@RequestBody UUID orderId);
 
     @PostMapping("/productCost")
     BigDecimal getPaymentProductCost(@RequestBody OrderDto orderDto);
 
     @PostMapping("/failed")
-    void paymentFailed(@RequestBody UUID orderId);
+    void paymentResultFailed(@RequestBody UUID orderId);
 }
