@@ -21,7 +21,7 @@ public interface PaymentClient {
     void paymentSuccess(@RequestBody UUID orderId);
 
     @PostMapping("/productCost")
-    Double getPaymentProductCost(@RequestBody OrderDto orderDto);
+    BigDecimal getPaymentProductCost(@RequestBody OrderDto orderDto);
 
     @PostMapping("/failed")
     void paymentFailed(@RequestBody UUID orderId);

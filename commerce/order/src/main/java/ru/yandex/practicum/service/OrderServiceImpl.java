@@ -7,6 +7,7 @@ import ru.yandex.practicum.exception.NotAuthorizedUserException;
 import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.feignclient.DeliveryClient;
 import ru.yandex.practicum.feignclient.PaymentClient;
+import ru.yandex.practicum.feignclient.ShoppingCartClient;
 import ru.yandex.practicum.feignclient.WarehouseClient;
 import ru.yandex.practicum.mapper.OrderMapper;
 import ru.yandex.practicum.model.*;
@@ -25,6 +26,7 @@ public class OrderServiceImpl implements OrderService {
     private final WarehouseClient warehouseClient;
     private final DeliveryClient deliveryClient;
     private final PaymentClient paymentClient;
+
     @Override
     public List<OrderDto> getOrder(String username) {
         if(username.isEmpty()||username==null){
@@ -38,7 +40,31 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto addOrder(CreateNewOrderRequest createNewOrderRequest) {
         log.info("OrderService: Запрос на создани нового заказа {}", createNewOrderRequest);
-        return null;
+        Order order = new Order();
+        order.setShoppingCartId(createNewOrderRequest.getShoppingCart().getShoppingCartId());
+        order.setProducts(createNewOrderRequest.getShoppingCart().getProducts());
+        order.setStatus(OrderStatus.NEW);
+        Order createdNewOrder = orderRepository.save(order);
+        BookedProductsDto bookedProducts = warehouseClient.checkProductQuantity(createNewOrderRequest.getShoppingCart());
+        createdNewOrder.setDeliveryWeight(bookedProducts.getDeliveryWeight());
+        createdNewOrder.setDeliveryVolume(bookedProducts.getDeliveryVolume());
+        createdNewOrder.setFragile(bookedProducts.getFragile());
+
+        OrderDto orderDto = orderMapper.orderToOrderDto(createdNewOrder);
+        BigDecimal productPrice = paymentClient.getPaymentProductCost(orderDto);
+        BigDecimal totalPrice = paymentClient.getTotalCost(orderDto);
+
+        createdNewOrder.setProductPrice(productPrice);
+        createdNewOrder.setTotalPrice(totalPrice);
+
+        DeliveryDto deliveryDto = new DeliveryDto();
+        deliveryDto.setOrderId(createdNewOrder.getOrderId());
+        deliveryDto.setToAddress(createNewOrderRequest.getDeliveryAddress());
+        deliveryDto.setFromAddress(warehouseClient.getAddress());
+        createdNewOrder.setDeliveryId(deliveryClient.addNewDelivery(deliveryDto).getDeliveryId());
+
+        paymentClient.addNewPayment(orderMapper.orderToOrderDto(createdNewOrder));
+        return orderMapper.orderToOrderDto(createdNewOrder);
     }
 
     @Override
@@ -123,11 +149,21 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto assembly(UUID orderId) {
-        return null;
+        log.info("OrderService: Запрос на сборку заказа c Id {}", orderId);
+        Order order= orderRepository.findById(orderId).orElseThrow(()-> new NotFoundException("Заказ не найден"));
+        order.setStatus(OrderStatus.ASSEMBLED);
+        orderRepository.save(order);
+        log.info("OrderService: Запрос на сборку заказа выполнен");
+        return orderMapper.orderToOrderDto(order);
     }
 
     @Override
     public OrderDto assemblyFailed(UUID orderId) {
-        return null;
+        log.info("OrderService: Запрос на эмуляцию ошибки при сборке заказа c Id {}", orderId);
+        Order order= orderRepository.findById(orderId).orElseThrow(()-> new NotFoundException("Заказ не найден"));
+        order.setStatus(OrderStatus.ASSEMBLY_FAILED);
+        orderRepository.save(order);
+        log.info("OrderService: Запрос на эмуляцию ошибки при сборке заказа выполнен");
+        return orderMapper.orderToOrderDto(order);
     }
 }
