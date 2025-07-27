@@ -22,7 +22,7 @@ public interface DeliveryClient {
     void pickedDelivery(@RequestBody UUID orderId);
 
     @PostMapping("/failed")
-    void failedDelivery(@RequestBody UUID orderId);
+    void emulateFailedDelivery(@RequestBody UUID orderId);
 
     @PostMapping("/cost")
     BigDecimal deliveryCost(@RequestBody OrderDto orderDto);

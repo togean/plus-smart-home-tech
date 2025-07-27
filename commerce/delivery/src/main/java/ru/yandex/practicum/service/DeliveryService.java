@@ -10,6 +10,6 @@ public interface DeliveryService {
     DeliveryDto addNewDelivery(DeliveryDto deliveryDto);
     void emulateSuccessfulDelivery(UUID orderId);
     void pickedDelivery(UUID orderId);
-    void failedDelivery(UUID orderId);
+    void emulateFailedDelivery(UUID orderId);
     BigDecimal deliveryCost(OrderDto orderDto);
 }

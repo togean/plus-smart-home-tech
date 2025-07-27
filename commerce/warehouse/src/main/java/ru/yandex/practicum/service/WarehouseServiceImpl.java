@@ -8,14 +8,13 @@ import ru.yandex.practicum.exception.NoProductFoundInWarehouseException;
 import ru.yandex.practicum.exception.NotEnoughProductsInWarehouse;
 import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.exception.ProductAlreadyExistException;
+import ru.yandex.practicum.mapper.BookingMapper;
 import ru.yandex.practicum.mapper.WarehouseMapper;
 import ru.yandex.practicum.model.*;
+import ru.yandex.practicum.repository.BookingRepository;
 import ru.yandex.practicum.repository.WarehouseRepository;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -26,6 +25,8 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     private final WarehouseRepository warehouseRepository;
     private final WarehouseMapper warehouseMapper;
+    private final BookingRepository bookingRepository;
+    private final BookingMapper bookingMapper;
 
     @Override
     public void addNewProduct(NewProductInWarehouseRequest newProductInWarehouseRequest) {
@@ -107,5 +108,53 @@ public class WarehouseServiceImpl implements WarehouseService {
                 .flat(address)
                 .build();
         return addressDto;
+    }
+
+    @Override
+    public void shippedDelivery(ShippedToDeliveryRequest shippedToDeliveryRequest) {
+        log.info("WarehouseService: Запрос доставку заказа {}", shippedToDeliveryRequest.getOrderId());
+        Optional<Booking> booking = bookingRepository.findByOrderId(shippedToDeliveryRequest.getOrderId());
+        if (booking.isEmpty()) {
+            throw new NotFoundException("WarehouseService: Заказ с таким Id:" + shippedToDeliveryRequest.getOrderId() + " не найден");
+        }
+        booking.get().setDeliveryId(shippedToDeliveryRequest.getDeliveryId());
+        bookingRepository.save(booking.get());
+    }
+
+    @Override
+    public void returnToWarehouse(Map<UUID, Long> products) {
+        log.info("WarehouseService: Запрос на возврат товара");
+        List<WarehouseProduct> existedProductsInWarehouse = warehouseRepository.findAllById(products.keySet());
+        Set<WarehouseProduct> productsToBeUpdated = new HashSet<>();
+        for (WarehouseProduct product : existedProductsInWarehouse) {
+            Long productsQuantity = products.get(product.getProductId());
+            product.setQuantity(product.getQuantity() + productsQuantity);
+            productsToBeUpdated.add(product);
+        }
+        warehouseRepository.saveAll(productsToBeUpdated);
+    }
+
+    @Override
+    public BookedProductsDto assemblyOrder(AssemblyProductsForOrderRequest assemblyProductsForOrderRequest) {
+        log.info("WarehouseService: Запрос сборки товаров для заказа с id {}", assemblyProductsForOrderRequest.getShoppingCartId());
+        UUID shoppingCartId = assemblyProductsForOrderRequest.getShoppingCartId();
+        Optional<Booking> booking = bookingRepository.findByOrderId(shoppingCartId);
+        if (booking.isEmpty()) {
+            throw new NotFoundException("WarehouseService: Заказ с таким id не найден");
+        }
+        Map<UUID, Long> productsInBooking = booking.get().getProducts();
+        List<WarehouseProduct> existedProductsInWarehouse = warehouseRepository.findAllById(productsInBooking.keySet());
+
+        existedProductsInWarehouse.forEach(product -> {
+            if (product.getQuantity() < productsInBooking.get(product.getProductId())) {
+                throw new NotEnoughProductsInWarehouse("WarehouseService: на складе нет необходимого кол-ва товара с Id:" + product.getProductId());
+            }
+        });
+        for (WarehouseProduct product : existedProductsInWarehouse) {
+            product.setQuantity(product.getQuantity() - productsInBooking.get(product.getProductId()));
+        }
+        booking.get().setOrderId(assemblyProductsForOrderRequest.getOrderId());
+        log.info("WarehouseService: Запрос сборку товаров для заказа с id {} завершён", assemblyProductsForOrderRequest.getShoppingCartId());
+        return bookingMapper.toBookedProductsDto(booking.get());
     }
 }

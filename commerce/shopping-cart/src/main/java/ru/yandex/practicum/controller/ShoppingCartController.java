@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.feignclient.ShoppingCartClient;
+import ru.yandex.practicum.model.BookedProductsDto;
 import ru.yandex.practicum.model.ChangeProductQuantityRequest;
 import ru.yandex.practicum.model.ShoppingCartDto;
 import ru.yandex.practicum.service.ShoppingCartService;
@@ -50,5 +51,14 @@ public class ShoppingCartController implements ShoppingCartClient {
     public void deactivateCart(String username) {
         log.info("ShoppingCartController: Поступил запрос на декативацию товара");
         shoppingCartService.deactivateCart(username);
+    }
+    @Override
+    public BookedProductsDto bookProducts(String username) {
+        return shoppingCartService.bookShoppingCartInWarehouse(username);
+    }
+
+    @Override
+    public String getUserName(UUID cartId) {
+        return shoppingCartService.getUserName(cartId);
     }
 }

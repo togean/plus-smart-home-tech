@@ -7,7 +7,6 @@ import ru.yandex.practicum.exception.NotAuthorizedUserException;
 import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.feignclient.DeliveryClient;
 import ru.yandex.practicum.feignclient.PaymentClient;
-import ru.yandex.practicum.feignclient.ShoppingCartClient;
 import ru.yandex.practicum.feignclient.WarehouseClient;
 import ru.yandex.practicum.mapper.OrderMapper;
 import ru.yandex.practicum.model.*;
@@ -29,7 +28,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDto> getOrder(String username) {
-        if(username.isEmpty()||username==null){
+        if (username.isEmpty() || username == null) {
             throw new NotAuthorizedUserException("OrderService: имя пользователя при запросе его заказов не указано");
         }
         log.info("OrderService: Запрос заказов от пользователя {}", username);
@@ -70,7 +69,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto returnProduct(ProductReturnRequest productReturnRequest) {
         log.info("OrderService: Запрос на возврат товаров {}", productReturnRequest);
-        Order order= orderRepository.findById(productReturnRequest.getOrderId()).orElseThrow(()-> new NotFoundException("Заказ не найден"));
+        Order order = orderRepository.findById(productReturnRequest.getOrderId()).orElseThrow(() -> new NotFoundException("Заказ не найден"));
         warehouseClient.returnToWarehouse(productReturnRequest.getProducts());
         order.setStatus(OrderStatus.PRODUCT_RETURNED);
         orderRepository.save(order);
@@ -81,7 +80,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto payment(UUID orderId) {
         log.info("OrderService: Запрос на оплату заказа c Id {}", orderId);
-        Order order= orderRepository.findById(orderId).orElseThrow(()-> new NotFoundException("Заказ не найден"));
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("Заказ не найден"));
         order.setStatus(OrderStatus.PAID);
         orderRepository.save(order);
         log.info("OrderService: Запрос на оплату заказа выполнен");
@@ -91,7 +90,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto paymentFailed(UUID orderId) {
         log.info("OrderService: Запрос эмуляции ошибки оплаты заказа c Id {}", orderId);
-        Order order= orderRepository.findById(orderId).orElseThrow(()-> new NotFoundException("Заказ не найден"));
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("Заказ не найден"));
         order.setStatus(OrderStatus.PAYMENT_FAILED);
         orderRepository.save(order);
         log.info("OrderService: Запрос эмуляции ошибки оплаты заказа выполнен");
@@ -101,7 +100,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto delivery(UUID orderId) {
         log.info("OrderService: Запрос доставки заказа c Id {}", orderId);
-        Order order= orderRepository.findById(orderId).orElseThrow(()-> new NotFoundException("Заказ не найден"));
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("Заказ не найден"));
         order.setStatus(OrderStatus.DELIVERED);
         orderRepository.save(order);
         log.info("OrderService: Запрос доставки заказа выполнен");
@@ -111,7 +110,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto deliveryFailed(UUID orderId) {
         log.info("OrderService: Запрос эмуляции ошибки доставки заказа c Id {}", orderId);
-        Order order= orderRepository.findById(orderId).orElseThrow(()-> new NotFoundException("Заказ не найден"));
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("Заказ не найден"));
         order.setStatus(OrderStatus.DELIVERY_FAILED);
         orderRepository.save(order);
         log.info("OrderService: Запрос эмуляции ошибки доставки заказа выполнен");
@@ -121,7 +120,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto completed(UUID orderId) {
         log.info("OrderService: Запрос на завершение заказа c Id {}", orderId);
-        Order order= orderRepository.findById(orderId).orElseThrow(()-> new NotFoundException("Заказ не найден"));
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("Заказ не найден"));
         order.setStatus(OrderStatus.COMPLETED);
         orderRepository.save(order);
         log.info("OrderService: Запрос на завершение заказа выполнен");
@@ -131,7 +130,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto calculateTotalCost(UUID orderId) {
         log.info("OrderService: Запрос на расчёт итоговой стоимости заказа c Id {}", orderId);
-        Order order= orderRepository.findById(orderId).orElseThrow(()-> new NotFoundException("Заказ не найден"));
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("Заказ не найден"));
         order.setTotalPrice(paymentClient.getTotalCost(orderMapper.orderToOrderDto(order)));
         orderRepository.save(order);
         log.info("OrderService: Запрос на расчёт итоговой стоимости заказа c Id {} выполнен", orderId);
@@ -141,7 +140,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto calculateDeliveryCost(UUID orderId) {
         log.info("OrderService: Запрос на расчёт доставки заказа c Id {}", orderId);
-        Order order= orderRepository.findById(orderId).orElseThrow(()-> new NotFoundException("Заказ не найден"));
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("Заказ не найден"));
         BigDecimal deliveryPrice = deliveryClient.deliveryCost(orderMapper.orderToOrderDto(order));
         order.setTotalPrice(deliveryPrice);
         return orderMapper.orderToOrderDto(orderRepository.save(order));
@@ -150,7 +149,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto assembly(UUID orderId) {
         log.info("OrderService: Запрос на сборку заказа c Id {}", orderId);
-        Order order= orderRepository.findById(orderId).orElseThrow(()-> new NotFoundException("Заказ не найден"));
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("Заказ не найден"));
         order.setStatus(OrderStatus.ASSEMBLED);
         orderRepository.save(order);
         log.info("OrderService: Запрос на сборку заказа выполнен");
@@ -160,7 +159,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto assemblyFailed(UUID orderId) {
         log.info("OrderService: Запрос на эмуляцию ошибки при сборке заказа c Id {}", orderId);
-        Order order= orderRepository.findById(orderId).orElseThrow(()-> new NotFoundException("Заказ не найден"));
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("Заказ не найден"));
         order.setStatus(OrderStatus.ASSEMBLY_FAILED);
         orderRepository.save(order);
         log.info("OrderService: Запрос на эмуляцию ошибки при сборке заказа выполнен");

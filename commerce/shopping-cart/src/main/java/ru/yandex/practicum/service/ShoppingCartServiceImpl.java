@@ -111,6 +111,27 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         return shoppingCartMapper.shoppingCartDtoToCart(userCart);
     }
 
+    @Override
+    public BookedProductsDto bookShoppingCartInWarehouse(String username) {
+        log.info("ShoppingCartService: Запрос на бронирование корзины товаров для пользователя {}", username);
+        validateUser(username);
+        ShoppingCart cart = shoppingCartRepository.findByUsername(username)
+                .orElseThrow(() -> new NotFoundException("ShoppingCartService: не найдена корзина товаров для пользователя" + username));
+        if (cart.getCartProducts() == null || cart.getCartProducts().isEmpty()) {
+            throw new ValidationException("ShoppingCartService: в корзине пользователя "+username+" нет товаров.");
+        }
+        log.info("ShoppingCartService: Запрос на бронирование корзины товаров для пользователя {} выполнен", username);
+        return warehouseClient.checkProductQuantity(shoppingCartMapper.shoppingCartDtoToCart(cart));
+    }
+
+    @Override
+    public String getUserName(UUID cartId) {
+        log.info("ShoppingCartService: Запрос на получения пользователя по корзине товаров");
+        ShoppingCart cartUser = shoppingCartRepository.findByCartId(cartId)
+                .orElseThrow(() -> new NotFoundException("Пользователя с картой " + cartId + " нет"));
+        return cartUser.getUsername();
+    }
+
     private void validateUser(String username) {
         log.info("ShoppingCartService: Проверка имени пользователя: {}", username);
         if (username == null || username.isEmpty()) {

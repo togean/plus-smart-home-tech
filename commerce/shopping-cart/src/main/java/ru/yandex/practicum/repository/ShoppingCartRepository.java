@@ -12,4 +12,6 @@ public interface ShoppingCartRepository extends JpaRepository<ShoppingCart, UUID
     Optional<ShoppingCart> findByUsernameAndActive(String username, Boolean active);
 
     Optional<ShoppingCart> findByUsername(String username);
+
+    Optional<ShoppingCart> findByCartId(UUID cartId);
 }

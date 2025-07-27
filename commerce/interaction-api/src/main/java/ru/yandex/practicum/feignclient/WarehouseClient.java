@@ -24,6 +24,7 @@ public interface WarehouseClient {
 
     @GetMapping("/address")
     AddressDto getAddress();
+
     @PostMapping("/shipped")
     void shippedDelivery(@RequestBody ShippedToDeliveryRequest shippedToDeliveryRequest);
 
@@ -31,5 +32,5 @@ public interface WarehouseClient {
     void returnToWarehouse(@RequestBody Map<UUID,Long> products);
 
     @PostMapping("/assembly")
-    BookedProductsDto asemblyOrder(@RequestBody AssemblyProductsForOrderRequest assemblyProductsForOrderRequest);
+    BookedProductsDto assemblyOrder(@RequestBody AssemblyProductsForOrderRequest assemblyProductsForOrderRequest);
 }

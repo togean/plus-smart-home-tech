@@ -2,6 +2,7 @@ package ru.yandex.practicum.feignclient;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.model.BookedProductsDto;
 import ru.yandex.practicum.model.ChangeProductQuantityRequest;
 import ru.yandex.practicum.model.ShoppingCartDto;
 
@@ -28,4 +29,9 @@ public interface ShoppingCartClient {
     @PostMapping("/change-quantity")
     ShoppingCartDto changeProductQuantity(@RequestParam("username") String username,
                                           @RequestBody ChangeProductQuantityRequest changeProductQuantityRequest);
+    @GetMapping("/username")
+    String getUserName(@RequestParam("cartId") UUID cartId);
+
+    @PostMapping("/booking")
+    BookedProductsDto bookProducts(@RequestParam("username") String username);
 }

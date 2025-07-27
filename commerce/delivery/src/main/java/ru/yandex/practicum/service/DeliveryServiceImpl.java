@@ -64,12 +64,12 @@ public class DeliveryServiceImpl implements DeliveryService {
     }
 
     @Override
-    public void failedDelivery(UUID deliveryId) {
+    public void emulateFailedDelivery(UUID deliveryId) {
         log.info("DeliveryService: Эмуляция неудачной доставки (Id {})", deliveryId);
         Delivery delivery = deliveryRepository.findById(deliveryId).orElseThrow(
                 () -> new NotFoundException("Доставка c указанным Id не найдена"));
         delivery.setDeliveryStatus(DeliveryStatus.FAILED);
-        orderClient.assemblyFailed(delivery.getOrderId());
+        orderClient.deliveryFailed(delivery.getOrderId());
     }
 
     @Override

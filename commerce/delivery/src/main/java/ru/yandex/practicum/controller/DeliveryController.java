@@ -36,9 +36,9 @@ public class DeliveryController implements DeliveryClient {
     }
 
     @Override
-    public void failedDelivery(UUID orderId) {
+    public void emulateFailedDelivery(UUID orderId) {
         log.info("DeliveryController: Эмуляция неуспешной доставки с id {}",orderId);
-        deliveryService.failedDelivery(orderId);
+        deliveryService.emulateFailedDelivery(orderId);
     }
 
     @Override

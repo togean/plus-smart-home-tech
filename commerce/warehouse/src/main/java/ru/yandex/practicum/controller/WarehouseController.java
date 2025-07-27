@@ -45,16 +45,19 @@ public class WarehouseController implements WarehouseClient {
 
     @Override
     public void shippedDelivery(ShippedToDeliveryRequest shippedToDeliveryRequest) {
-
+        log.info("WarehouseController: Запрос доставки");
+        warehouseService.shippedDelivery(shippedToDeliveryRequest);
     }
 
     @Override
     public void returnToWarehouse(Map<UUID, Long> products) {
-
+        log.info("WarehouseController: Запрос на возврат товаров");
+        warehouseService.returnToWarehouse(products);
     }
 
     @Override
-    public BookedProductsDto asemblyOrder(AssemblyProductsForOrderRequest assemblyProductsForOrderRequest) {
-        return null;
+    public BookedProductsDto assemblyOrder(AssemblyProductsForOrderRequest assemblyProductsForOrderRequest) {
+        log.info("WarehouseController: Запрос сборку заказа");
+        return warehouseService.assemblyOrder(assemblyProductsForOrderRequest);
     }
 }
