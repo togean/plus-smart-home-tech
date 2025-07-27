@@ -7,6 +7,6 @@ import ru.yandex.practicum.model.OrderDto;
 
 @Mapper(componentModel = "spring")
 public interface OrderMapper {
-    @Mapping(source = "state", target = "orderState")
+    @Mapping(source = "status", target = "orderState")
     OrderDto orderToOrderDto(Order order);
 }

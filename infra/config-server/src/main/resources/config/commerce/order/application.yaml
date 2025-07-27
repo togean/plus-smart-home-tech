@@ -18,4 +18,4 @@ spring:
     driver-class-name: org.postgresql.Driver
     url: 'jdbc:postgresql://localhost:10432/order_db'
     username: postgres
-    password: postgres
+    password: 12345

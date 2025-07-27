@@ -38,9 +38,9 @@ services:
     image: postgres:16.1
     container_name: shopping_store_db
     ports:
-      - "6432:5432"
+      - "6432:5433"
     environment:
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=12345
       - POSTGRES_USER=postgres
       - POSTGRES_DB=shopping_store_db
 
@@ -48,9 +48,9 @@ services:
     image: postgres:16.1
     container_name: shopping_cart_db
     ports:
-      - "7432:5432"
+      - "7432:5433"
     environment:
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=12345
       - POSTGRES_USER=postgres
       - POSTGRES_DB=shopping_cart_db
 
@@ -58,9 +58,9 @@ services:
     image: postgres:16.1
     container_name: warehouse_db
     ports:
-      - "8432:5432"
+      - "8432:5433"
     environment:
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=12345
       - POSTGRES_USER=postgres
       - POSTGRES_DB=warehouse_db
 
@@ -68,9 +68,9 @@ services:
     image: postgres:16.1
     container_name: analyzer
     ports:
-      - "5432:5432"
+      - "5432:5433"
     environment:
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=12345
       - POSTGRES_USER=postgres
       - POSTGRES_DB=analyzer
 
@@ -78,9 +78,9 @@ services:
     image: postgres:16.1
     container_name: delivery_db
     ports:
-      - "9432:5432"
+      - "9432:5433"
     environment:
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=12345
       - POSTGRES_USER=postgres
       - POSTGRES_DB=delivery_db
 
@@ -88,9 +88,9 @@ services:
     image: postgres:16.1
     container_name: order_db
     ports:
-      - "10432:5432"
+      - "10432:5433"
     environment:
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=12345
       - POSTGRES_USER=postgres
       - POSTGRES_DB=order_db
 
@@ -98,8 +98,8 @@ services:
     image: postgres:16.1
     container_name: payment_db
     ports:
-      - "11432:5432"
+      - "11432:5433"
     environment:
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=12345
       - POSTGRES_USER=postgres
       - POSTGRES_DB=payment_db

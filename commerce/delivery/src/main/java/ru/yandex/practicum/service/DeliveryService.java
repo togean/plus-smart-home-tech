@@ -8,8 +8,12 @@ import java.util.UUID;
 
 public interface DeliveryService {
     DeliveryDto addNewDelivery(DeliveryDto deliveryDto);
+
     void emulateSuccessfulDelivery(UUID orderId);
+
     void pickedDelivery(UUID orderId);
+
     void emulateFailedDelivery(UUID orderId);
+
     BigDecimal deliveryCost(OrderDto orderDto);
 }

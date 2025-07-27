@@ -32,7 +32,7 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     public ProductDto getProduct(UUID productId) {
         log.info("ShoppingStoreService: Запрос товара с UUID:{}", productId);
         Product product = shoppingStoreRepository.findByProductId(productId).orElseThrow(
-                () -> new NotFoundException("Товар не найден"));
+                () -> new NotFoundException("ShoppingStoreService: Товар не найден"));
         return productMapper.productToProductDto(product);
     }
 

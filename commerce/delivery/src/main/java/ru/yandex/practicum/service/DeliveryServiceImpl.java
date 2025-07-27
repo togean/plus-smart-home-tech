@@ -38,6 +38,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         }
         Delivery delivery = deliveryMapper.toDelivery(deliveryDto);
         delivery.setDeliveryStatus(DeliveryStatus.CREATED);
+        log.info("DeliveryService: Создание новой доставки для заказа выполнено");
         return deliveryMapper.toDeliveryDto(deliveryRepository.save(delivery));
     }
 
@@ -61,6 +62,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         ShippedToDeliveryRequest deliveryRequest = new ShippedToDeliveryRequest(
                 delivery.getOrderId(), delivery.getDeliveryId());
         warehouseClient.shippedDelivery(deliveryRequest);
+        log.info("DeliveryService: Доставка принята в работу");
     }
 
     @Override
@@ -70,6 +72,7 @@ public class DeliveryServiceImpl implements DeliveryService {
                 () -> new NotFoundException("Доставка c указанным Id не найдена"));
         delivery.setDeliveryStatus(DeliveryStatus.FAILED);
         orderClient.deliveryFailed(delivery.getOrderId());
+        log.info("DeliveryService: Эмуляция неудачной доставки выполнена");
     }
 
     @Override
@@ -98,7 +101,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         if (orderDto.getDeliveryVolume() != null) {
             deliveryCost = deliveryCost.add(BigDecimal.valueOf(orderDto.getDeliveryVolume()).multiply(VOLUME_PRICE));
         }
-
+        log.info("DeliveryService: Расчёт стоимости доставки выполнен");
         return deliveryCost;
     }
 }
