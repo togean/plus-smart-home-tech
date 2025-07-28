@@ -29,15 +29,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public PaymentDto addNewPayment(OrderDto orderDto) {
         log.info("PaymentService: Создание новой оплаты по заказу {}", orderDto);
-        if (orderDto.getDeliveryPrice() == null) {
-            throw new ValidationException("В заказе отсутствует информация о стоимости доставки");
-        }
-        if (orderDto.getProductPrice() == null) {
-            throw new ValidationException("В заказе отсутствует по стоимости товара");
-        }
-        if (orderDto.getTotalPrice() == null) {
-            throw new ValidationException("В заказе отсутствует необходимая о полной стоимости");
-        }
+
         Payment payment = new Payment();
         payment.setPaymentId(orderDto.getOrderId());
         payment.setPaymentStatus(PaymentStatus.PENDING);
@@ -52,12 +44,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public BigDecimal getTotalCost(OrderDto orderDto) {
         log.info("PaymentService: Расчёт полной оплаты по заказу {}", orderDto);
-        if (orderDto.getDeliveryPrice() == null) {
-            throw new ValidationException("В заказе отсутствует информация о стоимости доставки");
-        }
-        if (orderDto.getProductPrice() == null) {
-            throw new ValidationException("В заказе отсутствует по стоимости товара");
-        }
+
         BigDecimal totalCost = orderDto.getProductPrice()
                 .multiply(BigDecimal.valueOf(0.1))
                 .add(orderDto.getDeliveryPrice());

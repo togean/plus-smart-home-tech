@@ -34,10 +34,13 @@ public class OrderDto {
 
     private Double deliveryVolume;
 
+    @NotNull(groups = OnUpdate.class)
     private BigDecimal totalPrice;
 
+    @NotNull(groups = OnUpdate.class)
     private BigDecimal deliveryPrice;
 
+    @NotNull(groups = OnUpdate.class)
     private BigDecimal productPrice;
 
     @NotNull
