@@ -19,3 +19,9 @@ spring:
     url: 'jdbc:postgresql://localhost:10432/order_db'
     username: postgres
     password: 12345
+
+javax:
+  persistence:
+    validation:
+      group:
+        pre-update: ru.yandex.practicum.OnUpdate
