@@ -43,6 +43,6 @@ public class OrderDto {
     @NotNull(groups = OnUpdate.class)
     private BigDecimal productPrice;
 
-    @NotNull
+    @NotNull(groups = OnUpdate.class)
     private Map<UUID, Long> products;
 }

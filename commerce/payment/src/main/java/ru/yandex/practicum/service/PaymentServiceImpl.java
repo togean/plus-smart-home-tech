@@ -68,9 +68,7 @@ public class PaymentServiceImpl implements PaymentService {
         log.info("PaymentService: Запрос расчёта стоимости товаров заказа {}", orderDto);
         BigDecimal paymentProductCost = BigDecimal.ZERO;
         Map<UUID, Long> productsInOrder = orderDto.getProducts();
-        if (orderDto.getProducts() == null || orderDto.getProducts().isEmpty()) {
-            throw new ValidationException("PaymentService: В заказе не указан список товаров");
-        }
+
         for (Map.Entry<UUID, Long> entry : productsInOrder.entrySet()) {
             ProductDto product = shoppingStoreClient.getProduct(entry.getKey());
             paymentProductCost = paymentProductCost.add(BigDecimal.valueOf(product.getPrice() * entry.getValue()));
